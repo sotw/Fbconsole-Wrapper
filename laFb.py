@@ -18,6 +18,13 @@ defComments = 'no comments'
 defFrom = 'nowhere'
 defData = 'no data'
 
+if len(sys.argv) == 1:
+  print "laFb.py <option> <para1> <para2...>"
+  print "<option> <paraX> | describe"
+  print "p        message | update your fb status"
+  print "r        counts  | read counts from your fb home page"
+  exit()
+
 if sys.argv[1] == 'p':
   status = fbconsole.post("/me/feed", {"message":sys.argv[2]})
 elif sys.argv[1] == 'r':
