@@ -1,0 +1,27 @@
+0.01- setup github
+
+[En]
+Hi, guys. 
+This is just a project aim to wrapper fbconsole library and manipulate facebook graph api.
+I hope you can use it, custom it, and feedback any idea.
+
+[Chinese-T]
+嗨,大夥. 這只是一個project去包裝fbconsole這library然後access facebook graph api.
+我希望你能用他,改造他,然後feedback any idea
+
+[Install]
+1. install python 2.7
+2. install pip
+3. pip install fbconsole
+
+[manual]
+use "python laFb.py" to get online manual
+
+laFb.py <option> <para1> <para2> <...>
+
+r <howmany>(read howmany status) 
+p <message>(post something)
+
+have a nice day. 
+
+Hammer!
