@@ -1,11 +1,11 @@
 from __future__ import unicode_literals
 #from urllib import urlretrieve
 #import imp
+import os
 import sys
 import fbconsole
 import unicodedata
 import textwrap
-
 
 #urlretrieve('https://raw.github.com/facebook/fbconsole/master/src/fbconsole.py', '.fbconsole.py')
 #fb = imp.load_source('fb', '.fbconsole.py')
@@ -61,6 +61,11 @@ def termcode(num):
 def colorstr(astr,color):
     return termcode(CODE[color])+astr+termcode(CODE['ENDC'])
 
+def run(program, obj):
+    pid = os.fork()
+    if not pid:
+        os.execvp(program, obj)
+    return os.wait()[0]
 
 ri=0
 rMax=10
@@ -68,7 +73,9 @@ defMsgs = 'no message'
 defComments = 'no comments'
 defFrom = 'nowhere'
 defData = 'no data'
+defPic  = 'no pic'
 subFolder = "home"
+
 
 
 
@@ -104,6 +111,7 @@ elif sys.argv[1] == 'r':
 
 
   for post in fbconsole.iter_pages(fbconsole.get('/me/'+subFolder)):
+    #==== MESSAGE ====
     print ''
     dedented_text = textwrap.dedent(post.get('message',defMsgs)).strip()
     print colorstr(textwrap.fill(dedented_text,width=40, initial_indent=' '+post.get('from',defMsgs).get('name',defMsgs)+":", subsequent_indent='    '),'YELLOW')
@@ -111,6 +119,22 @@ elif sys.argv[1] == 'r':
     #print len(post.get('comments',defComments))
     #print post.get('comments',defComments)
     if post.get('comments',defComments).get('count',defMsgs) != 0:
+      #==== PICTURE ====
+      if post.get('picture',defPic)!='no pic':    
+        #paraList = [' ','--term-width','--colors',post.get('picture',defPic)]                     
+        #run('jp2p',paraList)
+        paraList = [' ',post.get('picture',defPic),'-s','-o','tmp.jpg']
+        print paraList        
+        run('curl',paraList);
+        paraList2 = [' ','tmp.jpg','-colorspace','Gray','tmpgray.jpg'] 
+        run('convert',paraList2)
+        paraList3 = [' ','tmpgray.jpg','-blur','5','tmpblur.jpg']
+        run('convert',paraList3)
+        paraList4 = [' ','tmpblur.jpg','-edge','6','tmpEdge.jpg']
+        run('convert',paraList4)
+        paraList5 = [' ','--term-width','tmpEdge.jpg']
+        run('jp2a',paraList5)
+        
       #print type(post.get('comments',defComments))
       for reply in post.get('comments',defComments).get('data',defMsgs):
         #print type(reply)
@@ -120,6 +144,9 @@ elif sys.argv[1] == 'r':
     #for comments in post.get('comments',defComments):
     #  print comments.get('id',defFrom)
     
+    
+
+
     ri+=1
     if ri == rMax:
       break
